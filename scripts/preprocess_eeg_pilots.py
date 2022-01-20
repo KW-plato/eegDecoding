@@ -25,7 +25,7 @@ dir_structure = {
     'epoched': "eeg/preprocessed/02_epoched",
     'cleaned': "eeg/preprocessed/03_cleaned",
     'pca': "eeg/preprocessed/04_PCA",
-    'rawepochs': "eeg/preprocessed/99_epochs_raw"
+    'rawepochs': "eeg/preprocessed/99_uncleanepochs"
     }
 
 trial_types = ["/".join([x,y,z]) for x in ['lift','use'] for y in ['fam','unfam'] for z in ['left','right']]
@@ -112,8 +112,10 @@ def get_eeg_and_preprocess(df, montage):
             eeg.drop_channels(['BIP65', 'BIP66', 'BIP67', 'BIP68', 'AUX69', 'AUX70', 'AUX71', 'AUX72'])
             # set the montage
             eeg.set_montage('standard_1020')
-            # resample to 512Hz
+            # reject the first 20 secs to get rid of voltage swings at the start
+            # resample to 256Hz
             # Note: the raw and the event are resampled simultaneously so that they stay more or less in synch.
+            eeg.crop(tmin=20)
             eeg_resamp, events_resamp = eeg.resample(sfreq=256, events=events)
 
             del eeg
@@ -148,7 +150,7 @@ def get_eeg_and_preprocess(df, montage):
 
             # run asr to clean the filtered raw data
             # Apply the ASR
-            asr = ASR(sfreq=eeg_resamp.info["sfreq"], cutoff=15)
+            asr = ASR(sfreq=eeg_resamp.info["sfreq"], cutoff=20)
             asr.fit(eeg_resamp)
             print("ASR fitted\n")
             eeg_resamp = asr.transform(eeg_resamp)
