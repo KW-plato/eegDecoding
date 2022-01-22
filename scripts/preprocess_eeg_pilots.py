@@ -123,7 +123,7 @@ def get_eeg_and_preprocess(df, montage):
 
             # EEG is recorded with average reference. Re-refer to Cz
             eeg_resamp.set_eeg_reference(ref_channels=['Cz'])
-            eeg_resamp.drop_channels(['Cz'])
+            eeg_resamp.drop_channels(['Cz','O2','O1'])
               # save to events folder
             save_file(eeg_resamp, 'events', subj, blk)
 
