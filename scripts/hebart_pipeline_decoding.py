@@ -27,7 +27,7 @@ dir_struct = {
     'filtered': "eeg/preprocessed/01_filtered",
     'epoched': "eeg/preprocessed/02_epoched",
     'cleaned': "eeg/preprocessed/03_cleaned",
-    'pca': "analysis/pca",
+    'pca': "analysis",
     'rawepochs': "eeg/preprocessed/99_epochs_raw"
     }
 
@@ -113,8 +113,6 @@ if __name__ == "__main__":
             tmpdf['subj_idx'] = s
             tmpdf['factor'] = factor
             subject_accuracies.append(tmpdf)
-            tmpdf.to_csv(os.path.join(datasrc, dir_struct['dir_subj'], dir_struct['pca'], f"{s}_{factor}_result.csv"),
-                           index=False, header=True)
 
 
     alldata = pd.concat(subject_accuracies)
